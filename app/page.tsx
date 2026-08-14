@@ -59,6 +59,29 @@ function cleanNumber(number: string) {
   return number.replace(/\D/g, "");
 }
 
+function whatsappUrl(number: string) {
+  return `https://wa.me/${cleanNumber(number)}`;
+}
+
+function WhatsAppIcon({ size = 26 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <circle cx="16" cy="16" r="16" fill="#25D366" />
+      <path
+        d="M23.4 8.55C21.43 6.58 18.8 5.5 16 5.5C10.22 5.5 5.52 10.2 5.52 15.98C5.52 17.82 6 19.62 6.9 21.2L5.43 26.56L10.92 25.12C12.44 25.95 14.19 26.38 15.98 26.38H16C21.77 26.38 26.48 21.68 26.48 15.9C26.48 13.1 25.39 10.53 23.4 8.55ZM16 24.64C14.39 24.64 12.82 24.21 11.43 23.39L11.12 23.2L7.86 24.05L8.73 20.88L8.53 20.55C7.67 19.17 7.21 17.59 7.21 15.98C7.21 11.13 11.16 7.18 16.01 7.18C18.36 7.18 20.57 8.1 22.23 9.76C23.89 11.42 24.8 13.63 24.8 15.98C24.79 20.82 20.84 24.64 16 24.64ZM20.72 18.18C20.46 18.05 19.2 17.43 18.96 17.34C18.7 17.25 18.52 17.21 18.34 17.47C18.16 17.74 17.63 18.31 17.47 18.51C17.3 18.71 17.13 18.74 16.87 18.61C16.61 18.48 15.78 18.21 14.79 17.32C14.02 16.64 13.5 15.8 13.34 15.54C13.17 15.27 13.32 15.13 13.45 15C13.57 14.88 13.72 14.69 13.85 14.53C13.98 14.37 14.03 14.25 14.12 14.07C14.21 13.89 14.16 13.73 14.1 13.6C14.04 13.47 13.52 12.2 13.3 11.69C13.09 11.19 12.87 11.26 12.71 11.25C12.56 11.24 12.38 11.24 12.2 11.24C12.02 11.24 11.73 11.31 11.48 11.58C11.22 11.85 10.52 12.5 10.52 13.76C10.52 15.03 11.5 16.25 11.63 16.42C11.76 16.6 13.55 19.36 16.3 20.55C16.96 20.84 17.48 21.01 17.89 21.14C18.56 21.35 19.17 21.32 19.65 21.25C20.19 21.17 21.31 20.6 21.54 19.98C21.77 19.36 21.77 18.82 21.7 18.71C21.64 18.6 21.47 18.53 20.72 18.18Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
 export default function Home() {
   const [search, setSearch] = useState("");
 
@@ -76,14 +99,11 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
-
       {/* =====================================================
           HEADER
       ====================================================== */}
       <header className="border-b border-slate-200 bg-slate-900">
         <div className="mx-auto flex min-h-[78px] max-w-[1180px] items-center justify-between px-4 sm:px-6">
-
-          {/* Logo / Brand */}
           <a href="#home" className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-yellow-400 text-lg font-black text-slate-900">
               VA
@@ -100,7 +120,6 @@ export default function Home() {
             </div>
           </a>
 
-          {/* Desktop Navigation */}
           <nav className="hidden items-center gap-7 md:flex">
             <a
               href="#home"
@@ -131,7 +150,6 @@ export default function Home() {
             </a>
           </nav>
 
-          {/* Mobile menu indicator */}
           <div className="md:hidden">
             <span className="rounded-md border border-slate-600 px-3 py-2 text-xs font-medium text-white">
               Menu
@@ -147,10 +165,7 @@ export default function Home() {
         id="home"
         className="mx-auto max-w-[1180px] px-4 py-7 sm:px-6 sm:py-10"
       >
-
-        {/* =================================================
-            SEARCH
-        ================================================== */}
+        {/* SEARCH */}
         <div className="mb-7">
           <label
             htmlFor="search"
@@ -179,9 +194,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* =================================================
-            CONTACT TITLE
-        ================================================== */}
+        {/* CONTACT TITLE */}
         <div
           id="contacts"
           className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"
@@ -205,33 +218,14 @@ export default function Home() {
             DESKTOP CONTACT TABLE
         ================================================== */}
         <div className="hidden overflow-hidden rounded-lg border border-slate-300 md:block">
-
-          {/* Table Header */}
-          <div className="grid grid-cols-[140px_1fr_100px_190px_150px] border-b border-slate-300 bg-slate-50 text-sm font-bold text-slate-900">
-
-            <div className="px-4 py-4">
-              Type
-            </div>
-
-            <div className="px-4 py-4">
-              Name
-            </div>
-
-            <div className="px-4 py-4">
-              ID
-            </div>
-
-            <div className="px-4 py-4">
-              WhatsApp
-            </div>
-
-            <div className="px-4 py-4 text-center">
-              Action
-            </div>
-
+          <div className="grid grid-cols-[140px_1fr_100px_190px_170px] border-b border-slate-300 bg-slate-50 text-sm font-bold text-slate-900">
+            <div className="px-4 py-4">Type</div>
+            <div className="px-4 py-4">Name</div>
+            <div className="px-4 py-4">ID</div>
+            <div className="px-4 py-4">WhatsApp</div>
+            <div className="px-4 py-4 text-center">Action</div>
           </div>
 
-          {/* Table Rows */}
           {filteredContacts.length === 0 ? (
             <div className="px-6 py-14 text-center text-sm text-slate-500">
               No contacts found.
@@ -240,14 +234,19 @@ export default function Home() {
             filteredContacts.map((contact) => (
               <div
                 key={contact.id}
-                className="grid grid-cols-[140px_1fr_100px_190px_150px] items-center border-b border-slate-200 last:border-b-0"
+                className="grid grid-cols-[140px_1fr_100px_190px_170px] items-center border-b border-slate-200 last:border-b-0"
               >
-
                 <div className="px-4 py-5 text-sm text-slate-600">
                   {contact.type}
                 </div>
 
-                <div className="px-4 py-5">
+                {/* Name clickable */}
+                <a
+                  href={whatsappUrl(contact.whatsapp)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-5 transition hover:bg-green-50"
+                >
                   <div className="text-sm font-bold text-slate-900">
                     {contact.name}
                   </div>
@@ -255,27 +254,34 @@ export default function Home() {
                   <div className="mt-1 text-xs text-slate-500">
                     {contact.role}
                   </div>
-                </div>
+                </a>
 
                 <div className="px-4 py-5 text-sm text-slate-600">
                   {contact.id}
                 </div>
 
-                <div className="px-4 py-5 text-sm font-bold text-slate-900">
+                {/* Number clickable */}
+                <a
+                  href={whatsappUrl(contact.whatsapp)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-5 text-sm font-bold text-slate-900 transition hover:bg-green-50 hover:text-green-700"
+                >
                   {contact.whatsapp}
-                </div>
+                </a>
 
+                {/* WhatsApp button */}
                 <div className="px-4 py-5 text-center">
                   <a
-                    href={`https://wa.me/${cleanNumber(contact.whatsapp)}`}
+                    href={whatsappUrl(contact.whatsapp)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex rounded-md bg-green-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-green-700"
+                    className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-green-700"
                   >
-                    WhatsApp
+                    <WhatsAppIcon size={20} />
+                    WhatsApp Chat
                   </a>
                 </div>
-
               </div>
             ))
           )}
@@ -283,90 +289,88 @@ export default function Home() {
 
         {/* =================================================
             MOBILE CONTACT CARDS
+            WHOLE CARD IS CLICKABLE
         ================================================== */}
-        <div className="space-y-3 md:hidden">
-
+        <div className="space-y-4 md:hidden">
           {filteredContacts.length === 0 ? (
             <div className="rounded-lg border border-slate-200 px-5 py-10 text-center text-sm text-slate-500">
               No contacts found.
             </div>
           ) : (
             filteredContacts.map((contact) => (
-              <div
+              <a
                 key={contact.id}
-                className="overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm"
+                href={whatsappUrl(contact.whatsapp)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Chat with ${contact.name} on WhatsApp`}
+                className="group block overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm transition active:scale-[0.99] hover:border-green-400 hover:shadow-md"
               >
-
-                {/* Card Header */}
-                <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-
+                {/* CARD HEADER */}
+                <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
                   <div className="flex min-w-0 items-center gap-3">
-
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-700">
                       {String(contact.id).padStart(2, "0")}
                     </div>
 
                     <div className="min-w-0">
-                      <h3 className="truncate text-base font-bold text-slate-900">
+                      <h3 className="truncate text-lg font-bold text-slate-900 group-hover:text-green-700">
                         {contact.name}
                       </h3>
 
-                      <p className="text-xs text-slate-500">
+                      <p className="text-sm text-slate-500">
                         {contact.role}
                       </p>
                     </div>
-
                   </div>
 
-                  <span className="ml-2 shrink-0 rounded-full bg-green-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-green-700">
+                  <span className="ml-2 shrink-0 rounded-full bg-green-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-green-700">
                     Agent
                   </span>
-
                 </div>
 
-                {/* WhatsApp */}
-                <div className="bg-slate-50 px-4 py-4">
+                {/* WHATSAPP AREA */}
+                <div className="bg-slate-50 px-4 py-5">
+                  <div className="flex items-center justify-between gap-4">
+                    {/* BIG WHATSAPP ICON */}
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-green-100">
+                      <WhatsAppIcon size={38} />
+                    </div>
 
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
-                    WhatsApp Number
-                  </p>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        WhatsApp Number
+                      </p>
 
-                  <div className="mt-2 flex items-center justify-between gap-3">
+                      <p className="mt-1 break-all text-base font-bold text-slate-900">
+                        {contact.whatsapp}
+                      </p>
+                    </div>
 
-                    <p className="break-all text-sm font-bold text-slate-900">
-                      {contact.whatsapp}
-                    </p>
-
-                    <a
-                      href={`https://wa.me/${cleanNumber(contact.whatsapp)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="shrink-0 rounded-md bg-green-600 px-3 py-2 text-xs font-bold text-white"
-                    >
-                      Chat
-                    </a>
-
+                    {/* CHAT BUTTON */}
+                    <span className="flex shrink-0 items-center gap-2 rounded-lg bg-green-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition group-hover:bg-green-700">
+                      <WhatsAppIcon size={22} />
+                      <span className="hidden min-[390px]:inline">
+                        WhatsApp Chat
+                      </span>
+                      <span className="min-[390px]:hidden">Chat</span>
+                    </span>
                   </div>
-
                 </div>
 
-                {/* Bottom Info */}
-                <div className="flex items-center justify-between px-4 py-3 text-xs">
-
-                  <span className="text-slate-500">
+                {/* BOTTOM INFO */}
+                <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3">
+                  <span className="text-sm text-slate-500">
                     Contact ID
                   </span>
 
-                  <span className="font-bold text-slate-700">
+                  <span className="text-sm font-bold text-slate-700">
                     #{contact.id}
                   </span>
-
                 </div>
-
-              </div>
+              </a>
             ))
           )}
-
         </div>
 
         {/* =================================================
@@ -389,15 +393,10 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-              <div className="mb-3 text-2xl">
-                📞
-              </div>
+              <div className="mb-3 text-2xl">📞</div>
 
-              <h3 className="font-bold">
-                Online Support
-              </h3>
+              <h3 className="font-bold">Online Support</h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Farmers can contact listed representatives online and ask
@@ -406,13 +405,9 @@ export default function Home() {
             </div>
 
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-              <div className="mb-3 text-2xl">
-                🌾
-              </div>
+              <div className="mb-3 text-2xl">🌾</div>
 
-              <h3 className="font-bold">
-                Farmer Assistance
-              </h3>
+              <h3 className="font-bold">Farmer Assistance</h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Our service directory is designed to make communication
@@ -421,20 +416,15 @@ export default function Home() {
             </div>
 
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-              <div className="mb-3 text-2xl">
-                💬
-              </div>
+              <div className="mb-3 text-2xl">💬</div>
 
-              <h3 className="font-bold">
-                Direct Communication
-              </h3>
+              <h3 className="font-bold">Direct Communication</h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Users can use the listed WhatsApp contacts to communicate
                 directly with available representatives.
               </p>
             </div>
-
           </div>
         </section>
 
@@ -450,7 +440,6 @@ export default function Home() {
           </h2>
 
           <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
             <p className="text-sm leading-7 text-slate-600">
               Velki Agent List is a community-focused contact directory
               created to make it easier for local farmers and customers to
@@ -468,7 +457,6 @@ export default function Home() {
               before sharing payment information, passwords, OTP codes,
               banking information, or other sensitive information.
             </p>
-
           </div>
         </section>
 
@@ -484,8 +472,6 @@ export default function Home() {
           </h2>
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-
-            {/* Email */}
             <div className="rounded-lg border border-slate-200 bg-white p-5">
               <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
                 Email
@@ -499,7 +485,6 @@ export default function Home() {
               </a>
             </div>
 
-            {/* Business Hours */}
             <div className="rounded-lg border border-slate-200 bg-white p-5">
               <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
                 Business Hours
@@ -513,7 +498,6 @@ export default function Home() {
                 Local service time
               </p>
             </div>
-
           </div>
 
           <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-5">
@@ -534,15 +518,12 @@ export default function Home() {
             BUSINESS INFORMATION
         ================================================== */}
         <section className="mt-10 border-t border-slate-200 pt-10">
-
           <h2 className="text-2xl font-bold text-slate-900">
             Business Information
           </h2>
 
           <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
             <div className="grid gap-5 sm:grid-cols-2">
-
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
                   Service Type
@@ -582,11 +563,8 @@ export default function Home() {
                   9:00 AM – 8:00 PM
                 </p>
               </div>
-
             </div>
-
           </div>
-
         </section>
 
         {/* =================================================
@@ -601,7 +579,6 @@ export default function Home() {
           </h2>
 
           <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
             <p className="text-sm leading-7 text-slate-600">
               By using this website, you agree to use the contact directory
               for legitimate communication and service-related purposes.
@@ -625,7 +602,6 @@ export default function Home() {
               We may update, remove, or modify contact information when
               necessary to maintain the quality and safety of the directory.
             </p>
-
           </div>
         </section>
 
@@ -641,7 +617,6 @@ export default function Home() {
           </h2>
 
           <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
             <p className="text-sm leading-7 text-slate-600">
               We respect your privacy. This website is designed primarily as
               a contact directory and does not require users to publish
@@ -667,7 +642,6 @@ export default function Home() {
               maintain service quality, and address legitimate operational
               issues.
             </p>
-
           </div>
         </section>
 
@@ -675,9 +649,7 @@ export default function Home() {
             IMPORTANT INFORMATION
         ================================================== */}
         <section className="mt-10 border-t border-slate-200 pt-10">
-
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
             <h2 className="text-lg font-bold text-slate-900">
               Important Information
             </h2>
@@ -695,23 +667,16 @@ export default function Home() {
               unusual payment, stop the conversation and verify the request
               through an independent channel.
             </p>
-
           </div>
-
         </section>
-
       </section>
 
       {/* =====================================================
           FOOTER
       ====================================================== */}
       <footer className="mt-12 border-t border-slate-200 bg-slate-900">
-
         <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6">
-
           <div className="grid gap-8 md:grid-cols-3">
-
-            {/* Footer brand */}
             <div>
               <h3 className="font-bold text-white">
                 Velki Agent List
@@ -723,14 +688,12 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Footer links */}
             <div>
               <h3 className="font-bold text-white">
                 Quick Links
               </h3>
 
               <div className="mt-3 flex flex-col gap-2 text-sm">
-
                 <a
                   href="#home"
                   className="text-slate-400 hover:text-white"
@@ -758,18 +721,15 @@ export default function Home() {
                 >
                   Contact
                 </a>
-
               </div>
             </div>
 
-            {/* Footer legal */}
             <div>
               <h3 className="font-bold text-white">
                 Legal
               </h3>
 
               <div className="mt-3 flex flex-col gap-2 text-sm">
-
                 <a
                   href="#terms"
                   className="text-slate-400 hover:text-white"
@@ -790,20 +750,15 @@ export default function Home() {
                 >
                   support@velkiagentlist.com
                 </a>
-
               </div>
             </div>
-
           </div>
 
           <div className="mt-8 border-t border-slate-700 pt-5 text-center text-xs text-slate-500">
             © {new Date().getFullYear()} Velki Agent List. All rights reserved.
           </div>
-
         </div>
-
       </footer>
-
     </main>
   );
 }
