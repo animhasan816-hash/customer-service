@@ -151,7 +151,7 @@ export default function Home() {
 
             <div className="min-w-0">
               <h1 className="truncate text-base font-bold leading-tight text-white sm:text-xl">
-                Support Contact Directory
+                velki Contact Directory
               </h1>
 
               <p className="truncate text-[11px] text-slate-300 sm:text-sm">
@@ -201,7 +201,7 @@ export default function Home() {
         {/* INTRO */}
         <section className="mb-6">
           <h2 className="text-xl font-bold text-slate-900 sm:text-3xl">
-            Find a Support Contact
+            Find a velki Contact
           </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
