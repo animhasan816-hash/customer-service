@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type Contact = {
   id: number;
@@ -10,19 +10,24 @@ type Contact = {
   role: string;
 };
 
+/*
+  Static shuffled order.
+  No Math.random() is used, so there is no hydration mismatch.
+  Each contact appears twice.
+*/
 const contacts: Contact[] = [
   {
     id: 1,
     type: "AGENT",
-    name: "Ashik Vai",
+    name: "Akash Vai",
     whatsapp: "+601163800726",
     role: "Customer Support",
   },
   {
     id: 2,
     type: "AGENT",
-    name: "Raja Vai",
-    whatsapp: "+601161481563",
+    name: "Roki Vai",
+    whatsapp: "+971567481272",
     role: "Customer Support",
   },
   {
@@ -35,64 +40,53 @@ const contacts: Contact[] = [
   {
     id: 4,
     type: "AGENT",
-    name: "Rahim Vai",
-    whatsapp: "+60182983893",
-    role: "Customer Support",
-  },
-  {
-    id: 5,
-    type: "AGENT",
-    name: "Karim Vai",
-    whatsapp: "+601161481563",
-    role: "Customer Support",
-  },
-  {
-    id: 6,
-    type: "AGENT",
-    name: "Siam Vai",
-    whatsapp: "+60182983893",
-    role: "Customer Support",
-  },
-  {
-    id: 7,
-    type: "AGENT",
-    name: "Roki Vai",
-    whatsapp: "+971567481272",
-    role: "Customer Support",
-  },
-  {
-    id: 8,
-    type: "AGENT",
     name: "Raja Vai",
     whatsapp: "+601161481563",
     role: "Customer Support",
   },
   {
-    id: 9,
-    type: "AGENT",
-    name: "Somraj Vai",
-    whatsapp: "+60182983893",
-    role: "Customer Support",
-  },
-  {
-    id: 10,
+    id: 5,
     type: "AGENT",
     name: "Sha Aman Vai",
     whatsapp: "+60172670819",
     role: "Customer Support",
   },
   {
-    id: 11,
+    id: 6,
+    type: "AGENT",
+    name: "Raja Vai",
+    whatsapp: "+601161481563",
+    role: "Customer Support",
+  },
+  {
+    id: 7,
     type: "AGENT",
     name: "Akash Vai",
     whatsapp: "+601163800726",
     role: "Customer Support",
   },
+  {
+    id: 8,
+    type: "AGENT",
+    name: "Sha Aman Vai",
+    whatsapp: "+60172670819",
+    role: "Customer Support",
+  },
+  {
+    id: 9,
+    type: "AGENT",
+    name: "Roki Vai",
+    whatsapp: "+971567481272",
+    role: "Customer Support",
+  },
+  {
+    id: 10,
+    type: "AGENT",
+    name: "Somraj Vai",
+    whatsapp: "+60182983893",
+    role: "Customer Support",
+  },
 ];
-
-/* -----------------------------
-   WhatsApp URL
------------------------------ */
 
 function cleanNumber(number: string) {
   return number.replace(/\D/g, "");
@@ -102,27 +96,7 @@ function whatsappUrl(number: string) {
   return `https://wa.me/${cleanNumber(number)}`;
 }
 
-/* -----------------------------
-   Hydration-safe shuffle
------------------------------ */
-
-function shuffleContacts(list: Contact[]) {
-  const result = [...list];
-
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-
-  return result;
-}
-
-/* -----------------------------
-   WhatsApp Icon
------------------------------ */
-
-function WhatsAppIcon({ size = 24 }: { size?: number }) {
+function WhatsAppIcon({ size = 22 }: { size?: number }) {
   return (
     <svg
       width={size}
@@ -131,6 +105,7 @@ function WhatsAppIcon({ size = 24 }: { size?: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
+      className="shrink-0"
     >
       <circle cx="16" cy="16" r="16" fill="#25D366" />
 
@@ -142,95 +117,62 @@ function WhatsAppIcon({ size = 24 }: { size?: number }) {
   );
 }
 
-/* -----------------------------
-   HOME
------------------------------ */
-
 export default function Home() {
   const [search, setSearch] = useState("");
-
-  /*
-    IMPORTANT:
-
-    Initial state is always the same.
-    So server and browser initially render
-    exactly the same contacts.
-
-    Shuffle happens ONLY after the page
-    has mounted in the browser.
-
-    This prevents the previous
-    "Hydration failed" problem.
-  */
-
-  const [displayContacts, setDisplayContacts] =
-    useState<Contact[]>(contacts);
-
-  useEffect(() => {
-    setDisplayContacts(shuffleContacts(contacts));
-  }, []);
-
-  /* -----------------------------
-     Search
-  ----------------------------- */
 
   const filteredContacts = useMemo(() => {
     const value = search.trim().toLowerCase();
 
     if (!value) {
-      return displayContacts;
+      return contacts;
     }
 
-    return displayContacts.filter((contact) =>
-      [
-        contact.name,
-        contact.type,
-        String(contact.id),
-        contact.whatsapp,
-        contact.role,
-      ]
-        .join(" ")
+    return contacts.filter((contact) =>
+      `${contact.id} ${contact.type} ${contact.name} ${contact.whatsapp} ${contact.role}`
         .toLowerCase()
         .includes(value)
     );
-  }, [search, displayContacts]);
+  }, [search]);
 
   return (
-    <main className="min-h-screen bg-white text-slate-900">
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-white text-slate-900">
 
-      {/* =================================
-          HEADER
-      ================================= */}
-
-      <header className="border-b border-slate-200 bg-slate-900">
-        <div className="mx-auto flex min-h-[72px] max-w-[1180px] items-center justify-between px-4 sm:px-6">
+      {/* HEADER */}
+      <header className="w-full border-b border-slate-800 bg-slate-900">
+        <div className="mx-auto flex min-h-[68px] w-full max-w-[1180px] items-center justify-between px-3 sm:px-6">
 
           <a
             href="#home"
-            className="flex items-center gap-3"
+            className="flex min-w-0 items-center gap-2"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-400 text-sm font-black text-slate-900">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-yellow-400 text-base font-black text-slate-900">
               VA
             </div>
 
-            <div>
-              <h1 className="text-base font-bold leading-tight text-white sm:text-lg">
-                Velki Agent List
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-bold leading-tight text-white sm:text-xl">
+                Support Contact Directory
               </h1>
 
-              <p className="text-[11px] text-slate-300 sm:text-xs">
+              <p className="truncate text-[11px] text-slate-300 sm:text-sm">
                 Farmer Support & Service
               </p>
             </div>
           </a>
 
-          <nav className="hidden items-center gap-6 md:flex">
-
+          <nav className="hidden shrink-0 items-center gap-6 md:flex">
             <a
               href="#home"
               className="text-sm font-medium text-white hover:text-yellow-300"
             >
               Home
+            </a>
+
+            <a
+              href="#contacts"
+              className="text-sm font-medium text-white hover:text-yellow-300"
+            >
+              Contacts
             </a>
 
             <a
@@ -241,43 +183,34 @@ export default function Home() {
             </a>
 
             <a
-              href="#about"
-              className="text-sm font-medium text-white hover:text-yellow-300"
-            >
-              About
-            </a>
-
-            <a
               href="#contact"
               className="text-sm font-medium text-white hover:text-yellow-300"
             >
               Contact
             </a>
-
           </nav>
-
-          <div className="md:hidden">
-            <span className="rounded-md border border-slate-600 px-3 py-2 text-xs font-medium text-white">
-              Menu
-            </span>
-          </div>
-
         </div>
       </header>
 
-      {/* =================================
-          MAIN
-      ================================= */}
-
-      <section
+      {/* MAIN */}
+      <div
         id="home"
-        className="mx-auto max-w-[1180px] px-3 py-6 sm:px-6 sm:py-9"
+        className="mx-auto w-full max-w-[1180px] overflow-hidden px-3 py-6 sm:px-6 sm:py-10"
       >
 
+        {/* INTRO */}
+        <section className="mb-6">
+          <h2 className="text-xl font-bold text-slate-900 sm:text-3xl">
+            Find a Support Contact
+          </h2>
+
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+            Search the directory by name, ID or WhatsApp number.
+          </p>
+        </section>
+
         {/* SEARCH */}
-
-        <div className="mb-7">
-
+        <section className="mb-7 w-full">
           <label
             htmlFor="search"
             className="mb-2 block text-sm font-semibold text-slate-900"
@@ -285,592 +218,340 @@ export default function Home() {
             Search contacts
           </label>
 
-          <div className="flex flex-col gap-2 sm:flex-row">
-
+          <div className="flex w-full gap-2">
             <input
               id="search"
-              type="text"
+              type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search name, ID or phone number..."
+              placeholder="Name, ID or phone number..."
               autoComplete="off"
-              className="h-11 w-full rounded-md border border-slate-300 bg-white px-4 text-sm outline-none placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+              className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
             />
 
-            <button
-              type="button"
-              onClick={() => setSearch("")}
-              className="h-11 rounded-md bg-slate-700 px-7 text-sm font-bold text-white hover:bg-slate-800"
-            >
-              Clear
-            </button>
-
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="shrink-0 rounded-lg bg-slate-700 px-4 py-3 text-sm font-bold text-white hover:bg-slate-800"
+              >
+                Clear
+              </button>
+            )}
           </div>
+        </section>
 
-        </div>
+        {/* CONTACT TITLE */}
+        <section id="contacts" className="mb-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h2 className="text-xl font-bold text-slate-900">
+                Support Contacts
+              </h2>
 
-        {/* CONTACT HEADER */}
-
-        <div
-          id="contacts"
-          className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"
-        >
-
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900">
-              Support Contacts
-            </h2>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Listed service representatives and available contact channels.
-            </p>
-          </div>
-
-          <div className="w-fit rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-600">
-            {filteredContacts.length} contacts
-          </div>
-
-        </div>
-
-        {/* =================================
-            CONTACT TABLE
-
-            SAME TABLE STYLE ON DESKTOP
-            AND MOBILE
-
-            Mobile has horizontal scroll
-            instead of cards.
-        ================================= */}
-
-        <div className="overflow-x-auto rounded-lg border border-slate-300">
-
-          <div className="min-w-[820px]">
-
-            {/* TABLE HEADER */}
-
-            <div className="grid grid-cols-[110px_1fr_70px_190px_150px] border-b border-slate-300 bg-slate-50 text-sm font-bold text-slate-900">
-
-              <div className="px-4 py-4">
-                Type
-              </div>
-
-              <div className="px-4 py-4">
-                Name
-              </div>
-
-              <div className="px-4 py-4">
-                ID
-              </div>
-
-              <div className="px-4 py-4">
-                WhatsApp
-              </div>
-
-              <div className="px-4 py-4 text-center">
-                Action
-              </div>
-
+              <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+                Listed service representatives and available contact channels.
+              </p>
             </div>
 
-            {/* TABLE BODY */}
+            <div className="shrink-0 rounded-full bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600">
+              {filteredContacts.length}
+            </div>
+          </div>
+        </section>
 
-            {filteredContacts.length === 0 ? (
+        {/* =====================================================
+            RESPONSIVE TABLE
+            SAME TABLE-STYLE UI ON PC + MOBILE
+            NO HORIZONTAL SCROLL
+        ====================================================== */}
 
-              <div className="px-6 py-14 text-center text-sm text-slate-500">
-                No contacts found.
-              </div>
+        <section className="w-full max-w-full overflow-hidden rounded-xl border border-slate-300 bg-white">
 
-            ) : (
+          {/* TABLE HEADER */}
+          <div className="grid w-full grid-cols-[52px_minmax(0,1fr)_minmax(0,1.25fr)_58px] border-b border-slate-300 bg-slate-50 sm:grid-cols-[70px_minmax(0,1fr)_minmax(0,1.5fr)_90px]">
 
-              filteredContacts.map((contact) => (
+            <div className="px-2 py-3 text-xs font-bold text-slate-700 sm:px-4 sm:py-4 sm:text-sm">
+              ID
+            </div>
 
-                <div
-                  key={contact.id}
-                  className="grid grid-cols-[110px_1fr_70px_190px_150px] items-center border-b border-slate-200 last:border-b-0"
-                >
+            <div className="min-w-0 px-2 py-3 text-xs font-bold text-slate-700 sm:px-4 sm:py-4 sm:text-sm">
+              Name
+            </div>
 
-                  {/* TYPE */}
+            <div className="min-w-0 px-2 py-3 text-xs font-bold text-slate-700 sm:px-4 sm:py-4 sm:text-sm">
+              WhatsApp
+            </div>
 
-                  <div className="px-4 py-5 text-xs font-semibold text-slate-600">
-                    {contact.type}
-                  </div>
-
-                  {/* NAME */}
-
-                  <a
-                    href={whatsappUrl(contact.whatsapp)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-5 hover:bg-green-50"
-                  >
-
-                    <div className="text-sm font-bold text-slate-900">
-                      {contact.name}
-                    </div>
-
-                    <div className="mt-1 text-xs text-slate-500">
-                      {contact.role}
-                    </div>
-
-                  </a>
-
-                  {/* ID */}
-
-                  <div className="px-4 py-5 text-sm text-slate-600">
-                    {contact.id}
-                  </div>
-
-                  {/* NUMBER */}
-
-                  <a
-                    href={whatsappUrl(contact.whatsapp)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-5 text-sm font-bold text-slate-900 hover:bg-green-50 hover:text-green-700"
-                  >
-                    {contact.whatsapp}
-                  </a>
-
-                  {/* ACTION */}
-
-                  <div className="px-3 py-4 text-center">
-
-                    <a
-                      href={whatsappUrl(contact.whatsapp)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 rounded-md bg-green-600 px-3 py-2.5 text-xs font-bold text-white hover:bg-green-700"
-                    >
-
-                      <WhatsAppIcon size={19} />
-
-                      <span>
-                        Chat
-                      </span>
-
-                    </a>
-
-                  </div>
-
-                </div>
-
-              ))
-
-            )}
-
+            <div className="px-1 py-3 text-center text-xs font-bold text-slate-700 sm:px-2 sm:py-4 sm:text-sm">
+              Chat
+            </div>
           </div>
 
+          {/* TABLE BODY */}
+          {filteredContacts.length === 0 ? (
+            <div className="px-4 py-12 text-center text-sm text-slate-500">
+              No contacts found.
+            </div>
+          ) : (
+            filteredContacts.map((contact) => (
+              <div
+                key={contact.id}
+                className="grid w-full grid-cols-[52px_minmax(0,1fr)_minmax(0,1.25fr)_58px] items-center border-b border-slate-200 last:border-b-0 sm:grid-cols-[70px_minmax(0,1fr)_minmax(0,1.5fr)_90px]"
+              >
+
+                {/* ID */}
+                <div className="px-2 py-4 text-xs font-semibold text-slate-500 sm:px-4 sm:py-5 sm:text-sm">
+                  {contact.id}
+                </div>
+
+                {/* NAME */}
+                <a
+                  href={whatsappUrl(contact.whatsapp)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="min-w-0 px-2 py-4 hover:bg-green-50 sm:px-4 sm:py-5"
+                >
+                  <div className="truncate text-sm font-bold text-slate-900 sm:text-base">
+                    {contact.name}
+                  </div>
+
+                  <div className="mt-0.5 truncate text-[10px] text-slate-500 sm:text-xs">
+                    {contact.role}
+                  </div>
+                </a>
+
+                {/* NUMBER */}
+                <a
+                  href={whatsappUrl(contact.whatsapp)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="min-w-0 overflow-hidden px-2 py-4 hover:bg-green-50 sm:px-4 sm:py-5"
+                >
+                  <span className="block break-all text-[11px] font-bold leading-5 text-slate-900 sm:text-sm">
+                    {contact.whatsapp}
+                  </span>
+                </a>
+
+                {/* CHAT */}
+                <div className="flex items-center justify-center px-1 py-4 sm:px-2 sm:py-5">
+                  <a
+                    href={whatsappUrl(contact.whatsapp)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Chat with ${contact.name}`}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-green-600 shadow-sm hover:bg-green-700 sm:h-10 sm:w-10"
+                  >
+                    <WhatsAppIcon size={22} />
+                  </a>
+                </div>
+
+              </div>
+            ))
+          )}
+        </section>
+
+        {/* NOTE */}
+        <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+          <p className="text-xs leading-5 text-slate-600 sm:text-sm">
+            Please verify the identity and purpose of a contact before sharing
+            personal, financial, login, payment, OTP, PIN or other sensitive
+            information.
+          </p>
         </div>
 
-        {/* MOBILE TABLE NOTE */}
-
-        <p className="mt-2 text-[11px] text-slate-400 md:hidden">
-          Swipe left or right to view the complete table.
-        </p>
-
-        {/* =================================
-            SERVICES
-        ================================= */}
-
+        {/* SERVICES */}
         <section
           id="services"
           className="mt-10 border-t border-slate-200 pt-10"
         >
+          <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+            Our Services
+          </h2>
 
-          <div className="mb-6">
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+            A simple directory for finding listed service contacts and
+            available communication channels.
+          </p>
 
-            <h2 className="text-2xl font-bold text-slate-900">
-              Our Services
-            </h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
 
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              We provide a simple online directory for finding listed
-              service representatives and available communication channels.
-            </p>
-
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-
-              <div className="mb-3 text-2xl">
-                📞
-              </div>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="mb-2 text-xl">📞</div>
 
               <h3 className="font-bold">
                 Online Support
               </h3>
 
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Users can contact listed representatives online and ask
-                questions about available services.
+              <p className="mt-1 text-xs leading-5 text-slate-600 sm:text-sm">
+                Contact listed representatives online.
               </p>
-
             </div>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-
-              <div className="mb-3 text-2xl">
-                🌾
-              </div>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="mb-2 text-xl">🌾</div>
 
               <h3 className="font-bold">
                 Farmer Assistance
               </h3>
 
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                The directory is designed to make communication easier
-                for farmers and community members.
+              <p className="mt-1 text-xs leading-5 text-slate-600 sm:text-sm">
+                Find available support contacts easily.
               </p>
-
             </div>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-
-              <div className="mb-3 text-2xl">
-                💬
-              </div>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="mb-2 text-xl">💬</div>
 
               <h3 className="font-bold">
                 Direct Communication
               </h3>
 
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Users can use the listed WhatsApp links to communicate
-                directly with available representatives.
+              <p className="mt-1 text-xs leading-5 text-slate-600 sm:text-sm">
+                Open the listed WhatsApp contact directly.
               </p>
-
             </div>
 
           </div>
-
         </section>
 
-        {/* =================================
-            ABOUT
-        ================================= */}
-
+        {/* ABOUT */}
         <section
           id="about"
           className="mt-10 border-t border-slate-200 pt-10"
         >
-
-          <h2 className="text-2xl font-bold text-slate-900">
-            About Us
+          <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+            About
           </h2>
 
-          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
-            <p className="text-sm leading-7 text-slate-600">
-              Velki Agent List is a contact directory designed to make
-              it easier for users to find listed service representatives
-              and communication channels online.
+          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:p-6">
+            <p className="text-sm leading-6 text-slate-600">
+              This website provides a simple directory of independently listed
+              service contacts and communication channels.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              The directory provides contact information in a simple
-              searchable format so users can quickly find a listed
-              representative.
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Contact details may change over time. Users should verify a
+              contact before starting an important transaction or sharing
+              sensitive information.
             </p>
-
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              Users should independently verify contact identity and
-              purpose before sharing payment information, passwords,
-              OTP codes, banking information, or other sensitive data.
-            </p>
-
           </div>
-
         </section>
 
-        {/* =================================
-            CONTACT
-        ================================= */}
-
+        {/* CONTACT */}
         <section
           id="contact"
           className="mt-10 border-t border-slate-200 pt-10"
         >
-
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
             Contact Us
           </h2>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
 
-            <div className="rounded-lg border border-slate-200 bg-white p-5">
-
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+            <div className="rounded-lg border border-slate-200 bg-white p-4">
+              <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
                 Email
               </p>
 
-              <a
-                href="mailto:support@velkiagentlist.com"
-                className="mt-2 block break-all text-sm font-semibold text-slate-900 hover:underline"
-              >
+              <p className="mt-1 break-all text-sm font-semibold text-slate-900">
                 support@velkiagentlist.com
-              </a>
-
+              </p>
             </div>
 
-            <div className="rounded-lg border border-slate-200 bg-white p-5">
-
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+            <div className="rounded-lg border border-slate-200 bg-white p-4">
+              <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
                 Business Hours
               </p>
 
-              <p className="mt-2 text-sm font-semibold text-slate-900">
+              <p className="mt-1 text-sm font-semibold text-slate-900">
                 9:00 AM – 8:00 PM
               </p>
-
-              <p className="mt-1 text-xs text-slate-500">
-                Local service time
-              </p>
-
             </div>
 
           </div>
-
-          <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-5">
-
-            <h3 className="font-bold text-slate-900">
-              Safety Notice
-            </h3>
-
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Never share your password, OTP, PIN, bank login details,
-              payment credentials, or other sensitive information with
-              an unverified contact. Verify the identity of a representative
-              through an independent channel if you are unsure.
-            </p>
-
-          </div>
-
         </section>
 
-        {/* =================================
-            BUSINESS INFORMATION
-        ================================= */}
-
-        <section className="mt-10 border-t border-slate-200 pt-10">
-
-          <h2 className="text-2xl font-bold text-slate-900">
-            Business Information
-          </h2>
-
-          <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
-            <div className="grid gap-5 sm:grid-cols-2">
-
-              <div>
-
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                  Service Type
-                </p>
-
-                <p className="mt-1 text-sm font-semibold">
-                  Farmer & Community Support
-                </p>
-
-              </div>
-
-              <div>
-
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                  Support Channel
-                </p>
-
-                <p className="mt-1 text-sm font-semibold">
-                  Online / WhatsApp
-                </p>
-
-              </div>
-
-              <div>
-
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                  Email
-                </p>
-
-                <p className="mt-1 break-all text-sm font-semibold">
-                  support@velkiagentlist.com
-                </p>
-
-              </div>
-
-              <div>
-
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                  Service Hours
-                </p>
-
-                <p className="mt-1 text-sm font-semibold">
-                  9:00 AM – 8:00 PM
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* =================================
-            TERMS
-        ================================= */}
-
+        {/* TERMS */}
         <section
           id="terms"
           className="mt-10 border-t border-slate-200 pt-10"
         >
-
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
             Terms & Conditions
           </h2>
 
-          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
-            <p className="text-sm leading-7 text-slate-600">
-              By using this website, you agree to use the contact
-              directory for legitimate communication and service-related
-              purposes.
+          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:p-6">
+            <p className="text-sm leading-6 text-slate-600">
+              By using this website, you agree to use the directory for
+              legitimate communication and service-related purposes.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              Contact information may change over time. Users should
-              verify the identity and current availability of a
-              representative before starting an important transaction.
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Contact information may change. Verify the identity and current
+              availability of a representative before sharing important
+              information.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              Users are responsible for the information they choose
-              to share with third-party contacts. Do not send passwords,
-              OTP codes, payment credentials, banking information,
-              or other sensitive information through ordinary chat.
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Never share passwords, OTP codes, PINs, bank login details or
+              payment credentials through ordinary chat.
             </p>
-
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              We may update, remove, or modify contact information
-              when necessary to maintain the directory.
-            </p>
-
           </div>
-
         </section>
 
-        {/* =================================
-            PRIVACY
-        ================================= */}
-
+        {/* PRIVACY */}
         <section
           id="privacy"
           className="mt-10 border-t border-slate-200 pt-10"
         >
-
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
             Privacy Policy
           </h2>
 
-          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
-            <p className="text-sm leading-7 text-slate-600">
-              We respect your privacy. This website is designed primarily
-              as a contact directory and does not require users to publish
-              sensitive personal information.
+          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:p-6">
+            <p className="text-sm leading-6 text-slate-600">
+              The search field works locally in the browser to filter the
+              displayed contacts.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              Search terms entered into the contact search field are used
-              locally on the page to filter the displayed directory.
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Do not enter passwords, payment information, OTP codes or other
+              sensitive information into the search field.
             </p>
 
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              Do not enter passwords, payment information, OTP codes,
-              banking information, or other sensitive information into
-              the search field.
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              When you select a WhatsApp contact, the conversation takes place
+              through WhatsApp and is subject to WhatsApp's own terms and
+              privacy practices.
             </p>
-
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              When you choose to contact a representative through WhatsApp,
-              your communication takes place through WhatsApp and may be
-              subject to WhatsApp&apos;s own terms and privacy practices.
-            </p>
-
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              If you contact us by email, information in your message
-              may be used to respond to your support request and address
-              legitimate operational issues.
-            </p>
-
           </div>
-
         </section>
 
-        {/* =================================
-            IMPORTANT INFORMATION
-        ================================= */}
+      </div>
 
-        <section className="mt-10 border-t border-slate-200 pt-10">
+      {/* FOOTER */}
+      <footer className="mt-10 w-full border-t border-slate-800 bg-slate-900">
+        <div className="mx-auto w-full max-w-[1180px] px-3 py-7 sm:px-6">
 
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-
-            <h2 className="text-lg font-bold text-slate-900">
-              Important Information
-            </h2>
-
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              This website provides an independent directory of listed
-              service contacts. Contact details may belong to individual
-              representatives or service workers. Please verify the
-              identity and purpose of a contact before sharing personal,
-              financial, login, payment, or other sensitive information.
-            </p>
-
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              If a person asks for an OTP, password, bank login, PIN,
-              or unusual payment, stop the conversation and verify the
-              request through an independent channel.
-            </p>
-
-          </div>
-
-        </section>
-
-      </section>
-
-      {/* =================================
-          FOOTER
-      ================================= */}
-
-      <footer className="mt-12 border-t border-slate-200 bg-slate-900">
-
-        <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6">
-
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-3">
 
             <div>
-
               <h3 className="font-bold text-white">
-                Velki Agent List
+                Support Contact Directory
               </h3>
 
-              <p className="mt-2 max-w-sm text-sm leading-6 text-slate-400">
-                A contact directory designed to help users find
-                available service representatives online.
+              <p className="mt-2 text-xs leading-5 text-slate-400">
+                A simple directory for finding listed service contacts.
               </p>
-
             </div>
 
             <div>
-
               <h3 className="font-bold text-white">
                 Quick Links
               </h3>
 
-              <div className="mt-3 flex flex-col gap-2 text-sm">
-
+              <div className="mt-2 flex flex-col gap-1 text-xs">
                 <a
                   href="#home"
                   className="text-slate-400 hover:text-white"
@@ -879,38 +560,27 @@ export default function Home() {
                 </a>
 
                 <a
+                  href="#contacts"
+                  className="text-slate-400 hover:text-white"
+                >
+                  Contacts
+                </a>
+
+                <a
                   href="#services"
                   className="text-slate-400 hover:text-white"
                 >
                   Services
                 </a>
-
-                <a
-                  href="#about"
-                  className="text-slate-400 hover:text-white"
-                >
-                  About
-                </a>
-
-                <a
-                  href="#contact"
-                  className="text-slate-400 hover:text-white"
-                >
-                  Contact
-                </a>
-
               </div>
-
             </div>
 
             <div>
-
               <h3 className="font-bold text-white">
                 Legal
               </h3>
 
-              <div className="mt-3 flex flex-col gap-2 text-sm">
-
+              <div className="mt-2 flex flex-col gap-1 text-xs">
                 <a
                   href="#terms"
                   className="text-slate-400 hover:text-white"
@@ -924,26 +594,16 @@ export default function Home() {
                 >
                   Privacy Policy
                 </a>
-
-                <a
-                  href="mailto:support@velkiagentlist.com"
-                  className="break-all text-slate-400 hover:text-white"
-                >
-                  support@velkiagentlist.com
-                </a>
-
               </div>
-
             </div>
 
           </div>
 
-          <div className="mt-8 border-t border-slate-700 pt-5 text-center text-xs text-slate-500">
-            © 2026 Velki Agent List. All rights reserved.
+          <div className="mt-6 border-t border-slate-700 pt-4 text-center text-[10px] text-slate-500">
+            © 2026 Support Contact Directory. All rights reserved.
           </div>
 
         </div>
-
       </footer>
 
     </main>
